@@ -1,0 +1,27 @@
+.DS_Store
+.claude/
+.pnpm-store/
+.vercel/
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+.vite/
+app/.vite/
+app/public/submission/yance-hero.png
+
+# Local research, review, and submission-working documents.
+# Keep one concise public README; the runnable app's required index.html is not
+# affected because these patterns are anchored to the repository root.
+/*.html
+*.md
+!/README.md
+/SUBMISSION/
+/app/public/YANCE-*.html
+/app/public/submission/*.png
+/app/scripts/capture-submission-screenshots.mjs

@@ -1,0 +1,14 @@
+Indoor Bouldering V3 Rock Spot — attribution
+
+File: indoor-bouldering-v3-rock-spot.webm
+Original title: Indoor Bouldering V3 Rock Spot
+Creator: Cryptic C62
+Source: https://commons.wikimedia.org/wiki/File:Indoor_Bouldering_V3_Rock_Spot.webm
+License: Creative Commons Attribution-ShareAlike 3.0 Unported
+License text: https://creativecommons.org/licenses/by-sa/3.0/
+Local copy: unchanged; downloaded 2026-07-20
+SHA-256: 17ae8ad27a6ea993f3cc89a8d5d96b1e6339eb86059089a13069404edc4d0735
+
+The YanCe observation trace shown beside this video is separate, hand-authored
+demo data. It was not supplied by the creator, was not extracted from the video
+by a model, and is not research ground truth.

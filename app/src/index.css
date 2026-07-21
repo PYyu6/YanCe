@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ─────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+/* ── Camera video always fills its container ──────────── */
+video.camera-feed {
+  object-fit: cover;
+  transform: scaleX(-1); /* mirror for selfie-style camera guidance */
+}
+
+/* ── Canvas overlays sit exactly on top of images ─────── */
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Reach circle styles ─────────────────────────────── */
+.reach-easy { color: #22c55e; }
+.reach-moderate { color: #eab308; }
+.reach-limit { color: #f97316; }
+.reach-dynamic { color: #ef4444; }
+.reach-unreachable { color: #6b7280; }
+
+/* ── Bubble level ────────────────────────────────────── */
+.bubble-level {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+.bubble-level .bubble {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  position: absolute;
+  transition: transform 0.1s ease-out;
+}
+.bubble-level .target {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ── Step indicator animation ────────────────────────── */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.hold-active::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: pulse-ring 1.2s ease-out infinite;
+}
+
+/* ── Technique card ──────────────────────────────────── */
+.technique-card {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
