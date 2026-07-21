@@ -4,6 +4,11 @@
 
 The full-body beta shows every move as a separate four-contact stance: one clearly labeled **MOVED** hand or foot plus three **SUPPORT** contacts. Hold contacts and wall smears/flags are distinguished, and the suggested order explains why the next move is comparatively natural from the current stance.
 
+## Live demo
+
+- [Judge-ready seeded walkthrough](https://yan-ce.vercel.app/?demo=1&mode=classic) — no account or API key required.
+- [Full photo workflow](https://yan-ce.vercel.app/?mode=classic) — upload, calibrate, correct holds, and plan.
+
 ## Run locally
 
 ```bash
@@ -23,6 +28,8 @@ Open `http://localhost:5173/?mode=classic`. For a judge-ready seeded walkthrough
 - Uncertain recorded contacts require confirmation before replanning and create a private Beta Receipt.
 
 Codex accelerated the typed implementation, refactors, tests, failure tracing, and release preparation. Human decisions kept geometry deterministic, model roles bounded, corrections visible, and recorded fixtures honestly labeled.
+
+Build Week Codex session: `019f8605-7bd7-7fe0-b311-9c59d5490c49`.
 
 Verification: **113 unit/integration tests**, **17 Chromium flows**, TypeScript, and the production build pass.
 
