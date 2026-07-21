@@ -5,9 +5,20 @@ export interface ClimberProfile {
   armSpan: number;        // cm  (ape index = armSpan / height)
   grade: string;          // "V0"–"V10" or free text
   experience: Experience;
+  /**
+   * Optional self-reported abilities for full-body planning. Self-report is
+   * deliberate MVP honesty: a photo cannot measure hip mobility or lock-off
+   * strength, and pretending it can would poison the feasibility gate.
+   * UI phrasing anchors each level to a concrete test (splits / pull-up).
+   */
+  flexibility?: AbilityLevel;  // hip mobility: high ≈ near-splits, allows extreme high-steps
+  strength?: AbilityLevel;     // pulling power: high ≈ controlled one-arm lock-off region
 }
 
 export type Experience = 'beginner' | 'intermediate' | 'advanced';
+
+/** Self-reported ability tier used by the full-body feasibility gate. */
+export type AbilityLevel = 'low' | 'medium' | 'high';
 
 // Derived body measurements computed from the profile
 export interface BodyMeasurements {
@@ -154,6 +165,106 @@ export interface RouteAnalysis {
   measurements: BodyMeasurements;
   betas: Beta[];
   reachMap: Record<string, ReachDifficulty>; // holdId → difficulty from start
+}
+
+// ── Full-body beta: four-limb planned moves ────────────────────────────────
+
+/**
+ * How the user wants the route planned. 'auto' balances; 'static' bans
+ * dynamic reaches; 'flag' trades some foot placements for counter-balance
+ * flags; the legacy `'dyno'` ID enables long one-hand dynamic reaches (not a
+ * multi-limb jump). The preference is a
+ * PLANNING FILTER, not a promise the technique is safe for this person —
+ * availability is additionally gated on profile strength/flexibility.
+ */
+export type TechniquePreference = 'auto' | 'static' | 'flag' | 'dyno';
+
+/** One explicit contact in a planned four-limb stance. */
+export type PlannedContact =
+  | {
+      kind: 'hold';
+      holdId: string;
+      x: number;
+      y: number;
+    }
+  | {
+      kind: 'wall';
+      holdId: null;
+      mode: 'smear' | 'flag';
+      x: number;
+      y: number;
+    };
+
+export type PlannedStance = Record<Limb, PlannedContact>;
+
+/**
+ * Explainable, geometry-only estimate of why a transition appears here.
+ * Higher `easeScore` is better. It is intentionally not named "naturalness":
+ * hold friction, wall angle, body pose, and load are not observable here.
+ */
+export interface MoveOrderAssessment {
+  easeScore: number; // clamped 0–100
+  label: 'preferred' | 'workable' | 'demanding';
+  factors: Array<
+    | 'three_contact_support'
+    | 'foot_before_reach'
+    | 'within_comfort_span'
+    | 'short_contact_change'
+    | 'stable_foot_base'
+    | 'avoids_foot_cross'
+    | 'finish_match'
+    | 'flag_counterbalance'
+  >;
+}
+
+/**
+ * One full-body move: exactly ONE limb changes; the other three keep their
+ * placement. `stanceBefore` and `stanceAfter` are complete four-limb states;
+ * exactly `limb` must differ between them. This makes sequence continuity and
+ * the three supporting contacts machine-testable, rather than a UI inference.
+ */
+export interface FullBodyMove {
+  step: number;
+  limb: Limb;
+  from: PlannedContact;
+  to: PlannedContact;
+  toHoldId: string | null;      // null = smear the wall with this foot
+  reachDistance: number;        // cm from the limb's previous placement
+  difficulty: ReachDifficulty;
+  orderNote: string;            // why this limb moves at this point in the sequence
+  order: MoveOrderAssessment;
+  reason: string;               // feasibility/technique basis, shown as evidence
+  technique: string | null;     // technique id (e.g. 'flagging') when one applies
+  stanceBefore: PlannedStance;
+  stanceAfter: PlannedStance;
+}
+
+/** Optional confirmed current stance from which planning should begin. */
+export interface FullBodyPlanOptions {
+  startStance?: PlannedStance;
+}
+
+export interface FullBodyBeta {
+  preference: TechniquePreference;
+  moves: FullBodyMove[];
+  /** True when both hands finish on the top hold. */
+  complete: boolean;
+  /** Route-rule and assumption disclosures the UI must show. */
+  notes: string[];
+}
+
+/**
+ * A technique that is actually usable on THIS route for THIS person, with a
+ * plain difficulty and an availability reason. The chooser lists only these —
+ * never the full catalog — so users pick among techniques the wall offers.
+ */
+export interface RouteTechniqueOption {
+  preference: TechniquePreference;
+  name: string;
+  nameCn: string;
+  difficulty: 'easy' | 'moderate' | 'hard';
+  available: boolean;
+  reason: string;
 }
 
 // ── Climbing rules, body state, and objective-aware guidance ────────────────

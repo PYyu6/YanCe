@@ -6,7 +6,7 @@
  */
 
 import { useState } from 'react';
-import { ClimberProfile, Experience } from '../types';
+import { AbilityLevel, ClimberProfile, Experience } from '../types';
 import { computeMeasurements } from '../engine/climberModel';
 import { getHeightCategory } from '../knowledge/techniques';
 
@@ -23,6 +23,10 @@ export default function ProfileSetup({ onSubmit }: Props) {
   const [armSpan, setArmSpan] = useState(170);
   const [grade, setGrade] = useState('V3');
   const [experience, setExperience] = useState<Experience>('intermediate');
+  // Self-reported abilities for full-body planning. Anchored to concrete
+  // tests so the answer means the same thing for everyone; default medium.
+  const [flexibility, setFlexibility] = useState<AbilityLevel>('medium');
+  const [strength, setStrength] = useState<AbilityLevel>('medium');
 
   const apeIndex = (armSpan / height).toFixed(2);
   const measurements = computeMeasurements({ height, armSpan, grade, experience });
@@ -170,6 +174,50 @@ export default function ProfileSetup({ onSubmit }: Props) {
         </div>
       </div>
 
+      {/* Optional abilities for full-body (hands + feet) planning */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-rock-200 mb-1">
+            Flexibility <span className="text-rock-400 text-xs">柔软度</span>
+          </label>
+          <p className="text-[11px] text-rock-400 mb-2">High ≈ near-splits; sets your high-step limit</p>
+          <div className="grid grid-cols-3 gap-1">
+            {(['low', 'medium', 'high'] as AbilityLevel[]).map((v) => (
+              <button
+                key={v}
+                data-testid={`flexibility-${v}`}
+                onClick={() => setFlexibility(v)}
+                className={`py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
+                  flexibility === v ? 'bg-rock-400 text-white' : 'bg-rock-800 text-rock-300 hover:bg-rock-700'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-rock-200 mb-1">
+            Pull strength <span className="text-rock-400 text-xs">力量</span>
+          </label>
+          <p className="text-[11px] text-rock-400 mb-2">High ≈ controlled lock-off; gates dynamic moves</p>
+          <div className="grid grid-cols-3 gap-1">
+            {(['low', 'medium', 'high'] as AbilityLevel[]).map((v) => (
+              <button
+                key={v}
+                data-testid={`strength-${v}`}
+                onClick={() => setStrength(v)}
+                className={`py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
+                  strength === v ? 'bg-rock-400 text-white' : 'bg-rock-800 text-rock-300 hover:bg-rock-700'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Derived Stats Preview */}
       <div className="bg-rock-800/50 rounded-lg p-4 grid grid-cols-2 gap-3 text-sm">
         <div>
@@ -192,7 +240,7 @@ export default function ProfileSetup({ onSubmit }: Props) {
 
       {/* Submit */}
       <button
-        onClick={() => onSubmit({ height, armSpan, grade, experience })}
+        onClick={() => onSubmit({ height, armSpan, grade, experience, flexibility, strength })}
         className="w-full rounded-xl bg-rock-400 py-3.5 text-lg font-semibold text-white transition-colors hover:bg-rock-500"
       >
         Continue to wall photo →

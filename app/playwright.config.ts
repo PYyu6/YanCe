@@ -13,7 +13,7 @@ export default defineConfig({
   // bugs. Fail loud, fix the test.
   retries: 0,
   use: {
-    baseURL: 'http://localhost:5199',
+    baseURL: 'http://127.0.0.1:5199',
     // 900-high viewport keeps the detection canvas (innerHeight*0.5 tall) big
     // enough that hold-tap coordinates survive rounding comfortably.
     viewport: { width: 1280, height: 900 },
@@ -24,8 +24,10 @@ export default defineConfig({
     },
   },
   webServer: {
-    command: 'npx vite --port 5199 --strictPort',
-    url: 'http://localhost:5199',
+    // Use the same Node executable that launched Playwright. This keeps E2E
+    // runnable in clean/CI environments where a global `npx` is unavailable.
+    command: `"${process.execPath}" node_modules/vite/bin/vite.js --host 127.0.0.1 --port 5199 --strictPort`,
+    url: 'http://127.0.0.1:5199',
     reuseExistingServer: true,
     timeout: 30_000,
   },
